@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>複利係数表</title>
+<style>
+:root{--bg:#eef2f5;--card:#fff;--tx:#14212b;--mu:#5d6b78;--bd:#d9e0e6;--ac:#0f766e;--acs:#d5f0ec;--acx:#fff;--hl:#fff3c4;--hl2:#ffd761;--hd:#f4f7f9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e161c;--card:#16212a;--tx:#e6edf2;--mu:#93a3b0;--bd:#2a3944;--ac:#2dd4bf;--acs:#12403d;--acx:#06201d;--hl:#3a3414;--hl2:#8a6d0a;--hd:#1b2832}}
+:root[data-theme="dark"]{--bg:#0e161c;--card:#16212a;--tx:#e6edf2;--mu:#93a3b0;--bd:#2a3944;--ac:#2dd4bf;--acs:#12403d;--acx:#06201d;--hl:#3a3414;--hl2:#8a6d0a;--hd:#1b2832}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 14px 48px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--mu);margin:0 0 16px;font-size:13px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.tab{flex:0 0 auto;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 14px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.tab:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--hl2);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 10px}
+.what{display:grid;gap:4px;margin-bottom:2px}
+.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--hd);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;display:inline-block;font-size:14px}
+.muted{color:var(--mu);font-size:13px}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.ctl{grid-template-columns:1fr}}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;margin-bottom:6px}
+.ctl .v{font-size:24px;color:var(--ac)}
+.row{display:flex;gap:8px;align-items:center}
+.row input[type=range]{flex:1;accent-color:var(--ac);height:28px}
+.step{width:40px;height:40px;border-radius:10px;border:1px solid var(--bd);background:var(--hd);color:var(--tx);font-size:20px;cursor:pointer}
+.res{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+@media(max-width:640px){.res{grid-template-columns:1fr}}
+.big{background:var(--acs);border-radius:12px;padding:12px 20px;text-align:center}
+.big b{display:block;font-size:38px;color:var(--ac);line-height:1.2}
+.amt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:15px}
+.amt input{width:150px;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit}
+.amt .out{font-size:20px;font-weight:700}
+.tw{overflow:auto;max-height:440px;border:1px solid var(--bd);border-radius:10px}
+table{border-collapse:separate;border-spacing:0;font-size:13px;width:100%}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--bd);border-right:1px solid var(--bd);white-space:nowrap}
+thead th{position:sticky;top:0;background:var(--hd);z-index:2;cursor:pointer}
+tbody th{position:sticky;left:0;background:var(--hd);z-index:1;cursor:pointer}
+thead th:first-child{left:0;z-index:3}
+td{cursor:pointer}
+td.on,th.on{background:var(--hl)}
+td.sel{background:var(--hl2);font-weight:700;color:var(--tx);outline:2px solid var(--ac);outline-offset:-2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:5px 10px;font:inherit;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ac);color:var(--acx);border-color:var(--ac);font-weight:700}
+.cmp td small{display:block;color:var(--mu);font-size:11px}
+.cmp tr.cur td,.cmp tr.cur th{background:var(--hl)}
+.cmp td .bar{height:5px;border-radius:3px;background:var(--ac);margin-top:3px;opacity:.65}
+th.ng,td.ng{color:#e5484d}
+.inf{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}
+.inf input{width:20px;height:20px;accent-color:var(--ac)}
+.note{font-size:12px;color:var(--mu);margin-top:8px}
+.lg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:6px;font-weight:600}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.lg i{display:inline-block;width:20px;height:4px;border-radius:2px}
+#tblbox[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>複利係数表</h1>
+<p class="sub">係数を選んで、金利と期間を動かしてください。</p>
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<div class="card what" id="what"></div>
+
+<div class="card">
+<div class="ctl">
+<div><label for="rate"><span>金利(年利)</span><span class="v" id="rv"></span></label>
+<div class="row"><button class="step" id="rm" aria-label="金利を下げる">−</button><input type="range" id="rate" min="0" max="24" step="1"><button class="step" id="rp" aria-label="金利を上げる">+</button></div></div>
+<div><label for="per"><span>期間</span><span class="v" id="pv"></span></label>
+<div class="row"><button class="step" id="pm" aria-label="期間を減らす">−</button><input type="range" id="per" min="1" max="30" step="1"><button class="step" id="pp" aria-label="期間を増やす">+</button></div></div>
+</div>
+</div>
+
+<div class="card">
+<label class="inf"><input type="checkbox" id="infon">物価上昇(インフレ)を考慮する</label>
+<div id="infbox" hidden>
+<div class="amt" style="margin-top:8px"><span>物価上昇率</span><input id="infv" type="text" inputmode="decimal" value="1.9" style="width:80px" aria-label="物価上昇率(%)"><span>%</span><span class="muted">日本の消費者物価(2026年8月・前年同月比)は1.9%</span></div>
+<p class="note" id="infnote"></p>
+</div></div>
+
+<div class="card">
+<div class="res">
+<div class="big"><span class="muted" id="fname"></span><b id="fval"></b></div>
+<div class="amt" id="amt"></div>
+</div>
+</div>
+
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="margin:0">係数表</h2><button class="chip" id="tg" aria-expanded="true">表を隠す</button></div>
+<div id="tblbox"><div class="tw"><table id="tbl"></table></div>
+<p class="note">セルをタップすると、その金利・期間に切り替わります。</p></div>
+</div>
+
+<div class="card">
+<h2>金利を比べる</h2>
+<p class="muted" style="margin:0">比べたい金利を選んでください(最大5つ)。</p>
+<div class="chips" id="chips"></div>
+<div id="chart" style="margin:4px 0 14px"></div>
+<div class="tw"><table class="cmp" id="cmp"></table></div>
+<p class="note" id="cnote"></p>
+</div>
+</div>
+
+<script>
+const RATES=Array.from({length:25},(_,k)=>-2+k*0.5);
+const FX={
+ fv:{n:'終価係数',f:(i,n)=>Math.pow(1+i,n),what:'いまのお金が、将来いくらになるか。',inL:'いまの金額',outL:'将来の金額'},
+ pv:{n:'現価係数',f:(i,n)=>1/Math.pow(1+i,n),what:'将来もらうお金の、いまの価値。',inL:'将来の金額',outL:'いまの価値'},
+ sf:{n:'減債基金係数',f:(i,n)=>i/(Math.pow(1+i,n)-1),what:'目標額をためるのに、毎年いくら積み立てるか。',inL:'目標額',outL:'毎年の積立額'},
+ cr:{n:'資本回収係数',f:(i,n)=>i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1),what:'いま借りたお金を、毎年いくらずつ返すか。',inL:'借りた額',outL:'毎年の返済額'},
+ apv:{n:'年金現価係数',f:(i,n)=>(Math.pow(1+i,n)-1)/(i*Math.pow(1+i,n)),what:'毎年もらうお金の、いまの価値。',inL:'毎年の金額',outL:'いまの価値'},
+ afv:{n:'年金終価係数',f:(i,n)=>(Math.pow(1+i,n)-1)/i,what:'毎年積み立てたお金が、将来いくらになるか。',inL:'毎年の積立額',outL:'将来の金額'}
+};
+const keys=Object.keys(FX);
+const S={k:'fv',r:14,n:10,base:1000000,cmp:new Set([8,12,18])};
+const INF={on:false,v:1.9};
+const $=id=>document.getElementById(id);
+const rate=r=>RATES[r];
+const eff=r=>{const i=RATES[r]/100;return INF.on?(1+i)/(1+INF.v/100)-1:i};
+const ZERO={fv:n=>1,pv:n=>1,sf:n=>1/n,cr:n=>1/n,apv:n=>n,afv:n=>n};
+const fac=(k,r,n)=>{const i=eff(r);return Math.abs(i)<1e-9?ZERO[k](n):FX[k].f(i,n)};
+const f6=x=>x.toFixed(6);
+const yen=x=>Math.round(x).toLocaleString('ja-JP')+'円';
+const pct=r=>RATES[r].toFixed(1)+'%';
+
+function buildTabs(){
+ $('tabs').innerHTML=keys.map(k=>`<button class="tab" role="tab" data-k="${k}" aria-selected="${k===S.k}">${FX[k].n}</button>`).join('');
+ $('tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;S.k=b.dataset.k;update(true)};
+}
+function buildTable(){
+ const k=S.k;
+ let h='<thead><tr><th>期間＼金利</th>'+RATES.map((x,r)=>`<th data-r="${r}"${eff(r)<-1e-9?' class="ng"':''}>${x.toFixed(1)}%</th>`).join('')+'</tr></thead><tbody>';
+ for(let n=1;n<=30;n++){
+  h+=`<tr><th data-n="${n}">${n}年</th>`+RATES.map((x,r)=>`<td data-r="${r}" data-n="${n}"${eff(r)<-1e-9?' class="ng"':''}>${f6(fac(k,r,n))}</td>`).join('')+'</tr>';
+ }
+ $('tbl').innerHTML=h+'</tbody>';
+}
+function markTable(scroll){
+ $('tbl').querySelectorAll('.on,.sel').forEach(e=>e.classList.remove('on','sel'));
+ $('tbl').querySelectorAll(`[data-r="${S.r}"]`).forEach(e=>e.classList.add('on'));
+ $('tbl').querySelectorAll(`[data-n="${S.n}"]`).forEach(e=>e.classList.add('on'));
+ const c=$('tbl').querySelector(`td[data-r="${S.r}"][data-n="${S.n}"]`);
+ c.classList.remove('on');c.classList.add('sel');
+ if(scroll){const w=$('tbl').parentElement;w.scrollTo({left:Math.max(0,c.offsetLeft-w.clientWidth/2),top:Math.max(0,c.offsetTop-w.clientHeight/2)})}
+}
+function buildChips(){
+ $('chips').innerHTML=RATES.map((x,r)=>`<button class="chip" data-r="${r}" aria-pressed="${S.cmp.has(r)}">${x.toFixed(1)}%</button>`).join('');
+}
+const COL=['#2563eb','#e11d48','#d97706','#7c3aed','#059669'];
+function nice(m){const e=Math.pow(10,Math.floor(Math.log10(m)));const f=m/e;return (f<=1?1:f<=2?2:f<=5?5:10)*e}
+function fmtY(v){if(v>=1e8)return +(v/1e8).toFixed(2)+'億';if(v>=1e4)return +(v/1e4).toFixed(1)+'万';return Math.round(v).toLocaleString('ja-JP')}
+function buildChart(rs){
+ const F=FX[S.k],W=640,H=300,L=62,R=16,T=12,B=30;
+ const data=rs.map(r=>Array.from({length:30},(_,j)=>S.base*fac(S.k,r,j+1)));
+ const ym=nice(Math.max(1,...data.flat()));
+ const X=n=>L+(n-1)/29*(W-L-R),Y=v=>T+(1-v/ym)*(H-T-B);
+ const tx='font-size="12" fill="var(--mu)"';
+ let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${F.outL}の推移">`;
+ for(let i=0;i<=4;i++){const v=ym*i/4,y=Y(v);s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--bd)"/><text x="${L-8}" y="${y+4}" text-anchor="end" ${tx}>${fmtY(v)}</text>`}
+ [1,5,10,15,20,25,30].forEach(n=>{s+=`<text x="${X(n)}" y="${H-8}" text-anchor="middle" ${tx}>${n}年</text>`});
+ s+=`<line x1="${X(S.n)}" x2="${X(S.n)}" y1="${T}" y2="${H-B}" stroke="var(--mu)" stroke-dasharray="4 4"/>`;
+ data.forEach((d,j)=>{const c=COL[j%5];s+=`<polyline fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" points="${d.map((v,i)=>X(i+1).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/><circle cx="${X(S.n)}" cy="${Y(d[S.n-1])}" r="4.5" fill="${c}" stroke="var(--card)" stroke-width="2"/>`});
+ s+='</svg>';
+ const lg=rs.map((r,j)=>`<span><i style="background:${COL[j%5]}"></i>${pct(r)}</span>`).join('');
+ $('chart').innerHTML=`<div class="muted" style="margin-bottom:4px">${F.outL}の推移(縦軸:金額 / 横軸:期間)</div><div class="lg">${lg}</div>${s}`;
+}
+function buildCmp(){
+ const rs=[...S.cmp].sort((a,b)=>a-b);
+ const ns=[...new Set([5,10,15,20,25,30,S.n])].sort((a,b)=>a-b);
+ if(!rs.length){$('chart').innerHTML='';$('cmp').innerHTML='<tbody><tr><td style="text-align:left">金利を1つ以上選んでください。</td></tr></tbody>';return}
+ const F=FX[S.k];
+ let h='<thead><tr><th>期間＼金利</th>'+rs.map(r=>`<th style="cursor:default">${pct(r)}</th>`).join('')+'</tr></thead><tbody>';
+ for(const n of ns){
+  const vals=rs.map(r=>S.base*fac(S.k,r,n));const mx=Math.max(...vals);
+  h+=`<tr class="${n===S.n?'cur':''}"><th style="cursor:default">${n}年</th>`+vals.map((v,j)=>`<td style="cursor:default">${yen(v)}<div class="bar" style="width:${Math.max(4,v/mx*100)}%"></div></td>`).join('')+'</tr>';
+ }
+ $('cmp').innerHTML=h+'</tbody>';buildChart(rs);
+ $('cnote').textContent=`${F.inL} ${yen(S.base)} の場合の${F.outL}です。黄色の行が選択中の期間です。`;
+}
+function update(rebuild){
+ const F=FX[S.k];
+ [...$('tabs').children].forEach(b=>b.setAttribute('aria-selected',b.dataset.k===S.k));
+ $('what').innerHTML=`<div><b style="font-size:17px">${F.n}</b></div><div>${F.what}</div>`;
+ $('rate').value=S.r;$('per').value=S.n;
+ $('rv').textContent=pct(S.r);$('pv').textContent=S.n+'年';
+ const ie=eff(S.r)*100;
+ $('infnote').textContent=INF.on?`物価上昇を引いた金利で計算しています。いま選んだ金利 ${pct(S.r)} は、実質 ${ie.toFixed(2)}% です。`+(ie<-1e-9?'マイナスなので、お金の価値は目減りします。':''):'';
+ const fv=fac(S.k,S.r,S.n);
+ $('fname').textContent=F.outL+(INF.on?'(物価を考慮)':'');
+ $('fval').textContent=yen(S.base*fv);
+ $('amt').innerHTML=`<span>${F.inL}</span><input id="base" type="text" inputmode="numeric" value="${S.base.toLocaleString('ja-JP')}" aria-label="${F.inL}(円)"><span class="muted">円 × 係数 ${f6(fv)}</span>`;
+ $('base').oninput=e=>{const v=parseInt(e.target.value.replace(/[^0-9]/g,''),10);S.base=isNaN(v)?0:v;
+  $('fval').textContent=yen(S.base*fac(S.k,S.r,S.n));buildCmp()};
+ if(rebuild)buildTable();
+ markTable(rebuild);
+ buildCmp();
+}
+$('rate').oninput=e=>{S.r=+e.target.value;update()};
+$('per').oninput=e=>{S.n=+e.target.value;update()};
+$('rm').onclick=()=>{S.r=Math.max(0,S.r-1);update()};
+$('rp').onclick=()=>{S.r=Math.min(24,S.r+1);update()};
+$('pm').onclick=()=>{S.n=Math.max(1,S.n-1);update()};
+$('pp').onclick=()=>{S.n=Math.min(30,S.n+1);update()};
+$('tbl').onclick=e=>{
+ const t=e.target.closest('td,th');if(!t)return;
+ if(t.dataset.r!==undefined)S.r=+t.dataset.r;
+ if(t.dataset.n!==undefined)S.n=+t.dataset.n;
+ update();
+};
+$('chips').onclick=e=>{
+ const b=e.target.closest('.chip');if(!b)return;
+ const r=+b.dataset.r;
+ if(S.cmp.has(r))S.cmp.delete(r);else if(S.cmp.size<5)S.cmp.add(r);
+ buildChips();buildCmp();
+};
+$('infon').onchange=e=>{INF.on=e.target.checked;$('infbox').hidden=!INF.on;update(true)};
+$('infv').oninput=e=>{const v=parseFloat(e.target.value.replace(/[^0-9.\-]/g,''));INF.v=isNaN(v)?0:v;update(true)};
+$('tg').onclick=()=>{const b=$('tblbox');b.hidden=!b.hidden;$('tg').textContent=b.hidden?'表を見る':'表を隠す';$('tg').setAttribute('aria-expanded',String(!b.hidden));if(!b.hidden)markTable(true)};
+buildTabs();buildChips();update(true);
+</script>
+</body>
+</html>
